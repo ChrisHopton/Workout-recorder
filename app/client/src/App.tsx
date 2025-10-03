@@ -11,6 +11,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/p/:profileId" element={<Profile />} />
         <Route path="/p/:profileId/workout/today" element={<TodayWorkout />} />
+        <Route path="/p/:profileId/workout/:sessionDate" element={<TodayWorkout />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

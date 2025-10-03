@@ -20,12 +20,15 @@ export interface SessionExercise {
 
 interface ExerciseCardProps {
   exercise: SessionExercise;
+  locked: boolean;
   onSetChange: (setId: number, payload: { actual_reps: number | null; actual_weight: number | null }) => void;
   onSkip: (exerciseId: number) => void;
+  onSave: (exerciseId: number) => void;
+  onEdit: (exerciseId: number) => void;
 }
 
-export function ExerciseCard({ exercise, onSetChange, onSkip }: ExerciseCardProps) {
-  const disabled = exercise.skipped === 1;
+export function ExerciseCard({ exercise, locked, onSetChange, onSkip, onSave, onEdit }: ExerciseCardProps) {
+  const disabled = exercise.skipped === 1 || locked;
   const target = `${exercise.targetSets} × ${exercise.repLow}-${exercise.repHigh}`;
 
   return (
@@ -37,9 +40,22 @@ export function ExerciseCard({ exercise, onSetChange, onSkip }: ExerciseCardProp
             {target} {exercise.targetWeight ? `@ ${exercise.targetWeight} lb` : ''}
           </p>
         </div>
-        <button className="secondary-button" type="button" onClick={() => onSkip(exercise.id)} disabled={disabled}>
-          Skip Exercise
-        </button>
+        <div className="exercise-card-actions">
+          {disabled ? (
+            <button className="secondary-button" type="button" onClick={() => onEdit(exercise.id)}>
+              Edit
+            </button>
+          ) : (
+            <>
+              <button className="secondary-button" type="button" onClick={() => onSkip(exercise.id)}>
+                Skip Exercise
+              </button>
+              <button className="primary-button" type="button" onClick={() => onSave(exercise.id)}>
+                Save
+              </button>
+            </>
+          )}
+        </div>
       </div>
       <div className="exercise-set-list">
         {exercise.sets.map((set) => (
