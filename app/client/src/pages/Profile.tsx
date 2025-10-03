@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import WeekGrid, { PlanDay } from '../components/WeekGrid';
@@ -48,9 +48,10 @@ function Profile() {
   const [profile, setProfile] = useState<ProfileInfo | null>(null);
   const [statsRange, setStatsRange] = useState(() => {
     const to = dayjs().format('YYYY-MM-DD');
-    const from = mondayOfWeek(dayjs().subtract(11, 'week')).format('YYYY-MM-DD');
+    const from = dayjs(to).subtract(1, 'year').format('YYYY-MM-DD');
     return { from, to };
   });
+  const autoRangeAppliedRef = useRef(false);
 
   useEffect(() => {
     if (!profileId) return;
@@ -82,6 +83,54 @@ function Profile() {
       .catch((err) => setStatsError(err.message))
       .finally(() => setStatsLoading(false));
   }, [profileId, statsRange.from, statsRange.to]);
+
+  useEffect(() => {
+    if (!stats || autoRangeAppliedRef.current) return;
+    if (!statsRange.to) {
+      autoRangeAppliedRef.current = true;
+      return;
+    }
+
+    const timelineDates: string[] = [];
+
+    for (const point of stats.weeklyVolume) {
+      if (point.weekStartISO) {
+        timelineDates.push(point.weekStartISO);
+      }
+    }
+
+    for (const series of stats.oneRMSeriesByExercise) {
+      for (const point of series.points) {
+        if (point.date) {
+          timelineDates.push(point.date);
+        }
+      }
+    }
+
+    if (!timelineDates.length) {
+      autoRangeAppliedRef.current = true;
+      return;
+    }
+
+    let earliest = dayjs(timelineDates[0]);
+    for (const date of timelineDates.slice(1)) {
+      const current = dayjs(date);
+      if (current.isBefore(earliest)) {
+        earliest = current;
+      }
+    }
+
+    const toDate = dayjs(statsRange.to);
+    const oneYearAgo = toDate.subtract(1, 'year');
+    const desiredFromDate = earliest.isAfter(oneYearAgo) ? earliest : oneYearAgo;
+    const desiredFrom = desiredFromDate.format('YYYY-MM-DD');
+
+    autoRangeAppliedRef.current = true;
+
+    if (desiredFrom !== statsRange.from) {
+      setStatsRange((prev) => ({ ...prev, from: desiredFrom }));
+    }
+  }, [stats, statsRange.from, statsRange.to]);
 
   const weekLabel = useMemo(() => {
     const start = dayjs(weekStart);

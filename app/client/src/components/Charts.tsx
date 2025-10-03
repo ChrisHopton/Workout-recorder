@@ -57,6 +57,7 @@ export function Charts({ weeklyVolume, oneRMByExercise, oneRMSeriesByExercise }:
 
   const volumeOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const
@@ -64,6 +65,14 @@ export function Charts({ weeklyVolume, oneRMByExercise, oneRMSeriesByExercise }:
       title: {
         display: true,
         text: 'Weekly Volume'
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          maxRotation: 0,
+          autoSkipPadding: 12
+        }
       }
     }
   };
@@ -85,6 +94,7 @@ export function Charts({ weeklyVolume, oneRMByExercise, oneRMSeriesByExercise }:
 
   const oneRmOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const
@@ -93,13 +103,30 @@ export function Charts({ weeklyVolume, oneRMByExercise, oneRMSeriesByExercise }:
         display: true,
         text: 'Estimated 1RM Trends'
       }
+    },
+    scales: {
+      x: {
+        ticks: {
+          maxRotation: 0,
+          autoSkipPadding: 12
+        }
+      }
     }
   };
+
+  const volumeWidth = Math.max(weeklyVolume.length, 4) * 90;
+  const oneRmWidth = Math.max(oneRmLabels.length, 4) * 90;
 
   return (
     <div className="charts">
       <div className="chart-card card">
-        {weeklyVolume.length ? <Line data={volumeData} options={volumeOptions} /> : <p>No completed sessions yet.</p>}
+        {weeklyVolume.length ? (
+          <div className="chart-wrapper" style={{ minWidth: `${volumeWidth}px` }}>
+            <Line data={volumeData} options={volumeOptions} />
+          </div>
+        ) : (
+          <p>No completed sessions yet.</p>
+        )}
       </div>
 
       <div className="pr-grid">
@@ -112,7 +139,13 @@ export function Charts({ weeklyVolume, oneRMByExercise, oneRMSeriesByExercise }:
       </div>
 
       <div className="chart-card card">
-        {oneRMSeriesByExercise.length ? <Line data={oneRmData} options={oneRmOptions} /> : <p>Lift history coming soon.</p>}
+        {oneRMSeriesByExercise.length ? (
+          <div className="chart-wrapper" style={{ minWidth: `${oneRmWidth}px` }}>
+            <Line data={oneRmData} options={oneRmOptions} />
+          </div>
+        ) : (
+          <p>Lift history coming soon.</p>
+        )}
       </div>
     </div>
   );
