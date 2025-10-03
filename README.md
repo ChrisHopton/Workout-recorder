@@ -23,6 +23,31 @@ app/
 
 Optional (for development): Docker with docker-compose.
 
+## Docker (Frontend + Backend + Database)
+
+1. Ensure Docker and docker-compose are installed.
+2. From the project root, build and start all services:
+
+   ```bash
+   docker compose up --build
+   ```
+
+   This starts:
+
+   - **db:** MySQL 8 instance with the `hypertrophy` database pre-created.
+   - **server:** Express API on [http://localhost:3001](http://localhost:3001).
+   - **client:** Vite dev server on [http://localhost:5173](http://localhost:5173).
+
+3. To stop the stack, press `Ctrl+C` and run:
+
+   ```bash
+   docker compose down
+   ```
+
+   Add `-v` to the `down` command if you also want to remove the MySQL volume.
+
+Environment variables are defined inside `docker-compose.yml`. Adjust them as needed before running the stack.
+
 ## Setup
 
 ### Backend

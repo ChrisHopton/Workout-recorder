@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: hypertrophy
+      MYSQL_DATABASE: hypertrophy
+      MYSQL_USER: hypertrophy
+      MYSQL_PASSWORD: hypertrophy
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-phypertrophy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  server:
+    build:
+      context: ./app/server
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      CLIENT_ORIGIN: http://localhost:5173
+      DB_HOST: db
+      DB_USER: hypertrophy
+      DB_PASSWORD: hypertrophy
+      DB_DATABASE: hypertrophy
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+
+  client:
+    build:
+      context: ./app/client
+    environment:
+      VITE_API_URL: http://localhost:3001
+    depends_on:
+      - server
+    ports:
+      - "5173:5173"
+
+volumes:
+  db_data:
