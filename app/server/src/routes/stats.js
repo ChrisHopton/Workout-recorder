@@ -35,7 +35,8 @@ router.get('/summary', async (req, res, next) => {
     const pool = getPool();
 
     const [weeklyRows] = await pool.query(
-      `SELECT STR_TO_DATE(CONCAT(YEARWEEK(s.session_date, 3), ' Monday'), '%X%V %W') AS week_start,
+      `SELECT YEARWEEK(s.session_date, 3) AS week_key,
+              MIN(STR_TO_DATE(CONCAT(YEARWEEK(s.session_date, 3), ' Monday'), '%X%V %W')) AS week_start,
               SUM(se.actual_weight * se.actual_reps) AS volume
        FROM set_entries se
        JOIN session_exercises sxe ON sxe.id = se.session_exercise_id
@@ -47,7 +48,7 @@ router.get('/summary', async (req, res, next) => {
          AND se.actual_reps  IS NOT NULL
          AND sxe.skipped = 0
        GROUP BY YEARWEEK(s.session_date, 3)
-       ORDER BY week_start`,
+       ORDER BY week_key`,
       [profileId, fromDate, toDate]
     );
 
