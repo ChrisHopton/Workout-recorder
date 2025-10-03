@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import ExerciseCard, { SessionExercise } from '../components/ExerciseCard';
@@ -15,28 +15,46 @@ interface SessionResponse {
 }
 
 function TodayWorkout() {
-  const { profileId } = useParams();
+  const { profileId, sessionDate } = useParams<{ profileId: string; sessionDate?: string }>();
   const navigate = useNavigate();
   const [session, setSession] = useState<SessionResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [note, setNote] = useState('');
+  const [lockedExercises, setLockedExercises] = useState<Set<number>>(() => new Set());
+
+  const fallbackToday = useMemo(() => dayjs().format('YYYY-MM-DD'), []);
 
   useEffect(() => {
     if (!profileId) return;
-    const today = dayjs().format('YYYY-MM-DD');
+    const dateToLoad = sessionDate ?? fallbackToday;
+    if (sessionDate && !dayjs(sessionDate, 'YYYY-MM-DD', true).isValid()) {
+      setError('Invalid date supplied.');
+      setSession(null);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     api
-      .post<SessionResponse>(`/api/sessions/start?profileId=${profileId}&date=${today}`)
+      .post<SessionResponse>(`/api/sessions/start?profileId=${profileId}&date=${dateToLoad}`)
       .then((data) => {
         setSession(data);
         setNote(data.note ?? '');
+        setLockedExercises(() => {
+          const next = new Set<number>();
+          data.exercises.forEach((exercise) => {
+            if (exercise.skipped === 1) {
+              next.add(exercise.id);
+            }
+          });
+          return next;
+        });
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [profileId]);
+  }, [profileId, sessionDate, fallbackToday]);
 
   const refreshSet = (setId: number, payload: { actual_reps: number | null; actual_weight: number | null }) => {
     setSession((prev) => {
@@ -86,6 +104,41 @@ function TodayWorkout() {
     } catch (err) {
       console.error(err);
       setError('Failed to skip exercise.');
+    }
+  };
+
+  const handleSaveExercise = (exerciseId: number) => {
+    setLockedExercises((prev) => {
+      const next = new Set(prev);
+      next.add(exerciseId);
+      return next;
+    });
+  };
+
+  const handleEditExercise = async (exerciseId: number) => {
+    const wasSkipped = session?.exercises.find((exercise) => exercise.id === exerciseId)?.skipped === 1;
+    setLockedExercises((prev) => {
+      const next = new Set(prev);
+      next.delete(exerciseId);
+      return next;
+    });
+    setSession((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        exercises: prev.exercises.map((exercise) =>
+          exercise.id === exerciseId ? { ...exercise, skipped: 0 } : exercise
+        )
+      };
+    });
+
+    if (wasSkipped) {
+      try {
+        await api.patch(`/api/session-exercises/${exerciseId}/unskip`);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to restore exercise.');
+      }
     }
   };
 
@@ -141,17 +194,26 @@ function TodayWorkout() {
     );
   }
 
+  const sessionDay = dayjs(session.sessionDate);
+  const isToday = sessionDay.isSame(dayjs(), 'day');
+  const heroEyebrow = isToday ? "Today’s focus" : 'Session editor';
+  const heroTitle = isToday ? "Today’s Workout" : `Workout for ${sessionDay.format('MMMM D')}`;
+  const heroSubtitle = isToday
+    ? sessionDay.format('dddd, MMMM D')
+    : `Editing ${sessionDay.format('dddd, MMMM D')}`;
+  const skipLabel = isToday ? 'Skip Today' : 'Skip This Day';
+
   return (
     <main className="container today">
       <section className="today-hero card">
         <div className="today-hero-text">
-          <p className="eyebrow">Today&rsquo;s focus</p>
-          <h1>Today&rsquo;s Workout</h1>
-          <p className="today-hero-subtitle">{dayjs(session.sessionDate).format('dddd, MMMM D')}</p>
+          <p className="eyebrow">{heroEyebrow}</p>
+          <h1>{heroTitle}</h1>
+          <p className="today-hero-subtitle">{heroSubtitle}</p>
         </div>
         <div className="today-actions">
           <button type="button" className="secondary-button" onClick={handleSkipDay} disabled={submitting}>
-            Skip Today
+            {skipLabel}
           </button>
           <button type="button" className="primary-button" onClick={handleComplete} disabled={submitting}>
             Complete Session
@@ -171,8 +233,11 @@ function TodayWorkout() {
               <ExerciseCard
                 key={exercise.id}
                 exercise={exercise}
+                locked={lockedExercises.has(exercise.id)}
                 onSetChange={handleSetChange}
                 onSkip={handleSkipExercise}
+                onSave={handleSaveExercise}
+                onEdit={handleEditExercise}
               />
             ))
           )}

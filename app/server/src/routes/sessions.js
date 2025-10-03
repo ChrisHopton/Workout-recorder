@@ -176,6 +176,20 @@ router.patch('/session-exercises/:id/skip', async (req, res, next) => {
   }
 });
 
+router.patch('/session-exercises/:id/unskip', async (req, res, next) => {
+  const id = parseInt(req.params.id, 10);
+  if (!id) {
+    return res.status(400).json({ error: 'Invalid id' });
+  }
+  try {
+    const pool = getPool();
+    await pool.query('UPDATE session_exercises SET skipped=0 WHERE id=?', [id]);
+    res.json({ id, skipped: false });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.put('/set-entries/:id', async (req, res, next) => {
   const id = parseInt(req.params.id, 10);
   if (!id) {

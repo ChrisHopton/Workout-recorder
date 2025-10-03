@@ -16,6 +16,18 @@
   gap: 1.25rem;
 }
 
+.exercise-card-actions {
+  display: inline-flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.exercise-card-actions .primary-button,
+.exercise-card-actions .secondary-button {
+  white-space: nowrap;
+}
+
 .exercise-card-header h2 {
   margin: 0;
 }

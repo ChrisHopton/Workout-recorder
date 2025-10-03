@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import WeekGrid, { PlanDay } from '../components/WeekGrid';
 import Tabs from '../components/Tabs';
@@ -35,6 +35,7 @@ function mondayOfWeek(date: dayjs.Dayjs) {
 
 function Profile() {
   const { profileId } = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'plan' | 'stats'>('plan');
   const [weekStart, setWeekStart] = useState(() => mondayOfWeek(dayjs()).format('YYYY-MM-DD'));
   const [plan, setPlan] = useState<PlanResponse | null>(null);
@@ -178,7 +179,13 @@ function Profile() {
           <div className="panel-body">
             {planLoading && <p>Loading plan…</p>}
             {planError && <p className="error">{planError}</p>}
-            {plan && <WeekGrid weekStart={weekStart} days={plan.days} />}
+            {plan && (
+              <WeekGrid
+                weekStart={weekStart}
+                days={plan.days}
+                onSelectDay={(date) => navigate(`/p/${profileId}/workout/${date}`)}
+              />
+            )}
           </div>
         </section>
       ) : (

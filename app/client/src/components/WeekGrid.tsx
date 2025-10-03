@@ -19,6 +19,7 @@ export interface PlanDay {
 interface WeekGridProps {
   weekStart: string;
   days: PlanDay[];
+  onSelectDay?: (date: string) => void;
 }
 
 function formatTarget(exercise: PlanExercise) {
@@ -30,7 +31,7 @@ function formatTarget(exercise: PlanExercise) {
   return sets;
 }
 
-export function WeekGrid({ weekStart, days }: WeekGridProps) {
+export function WeekGrid({ weekStart, days, onSelectDay }: WeekGridProps) {
   const start = dayjs(weekStart);
   const ordered = [1, 2, 3, 4, 5, 6, 0].map((dow) => days.find((d) => d.dayOfWeek === dow));
 
@@ -38,8 +39,9 @@ export function WeekGrid({ weekStart, days }: WeekGridProps) {
     <div className="week-grid">
       {ordered.map((day, idx) => {
         const date = start.add(idx, 'day');
-        return (
-          <div key={idx} className="week-grid-cell card">
+        const dateString = date.format('YYYY-MM-DD');
+        const content = (
+          <>
             <h3>{date.format('ddd MMM D')}</h3>
             <p className="week-grid-title">{day?.title ?? 'Rest'}</p>
             <div className="week-grid-body">
@@ -56,6 +58,25 @@ export function WeekGrid({ weekStart, days }: WeekGridProps) {
                 <div className="rest-day">Rest / Recovery</div>
               )}
             </div>
+          </>
+        );
+
+        if (onSelectDay) {
+          return (
+            <button
+              key={idx}
+              type="button"
+              className="week-grid-cell card week-grid-cell--clickable"
+              onClick={() => onSelectDay(dateString)}
+              aria-label={`Edit workout for ${date.format('dddd, MMM D')}`}
+            >
+              {content}
+            </button>
+          );
+        }
+        return (
+          <div key={idx} className="week-grid-cell card">
+            {content}
           </div>
         );
       })}
