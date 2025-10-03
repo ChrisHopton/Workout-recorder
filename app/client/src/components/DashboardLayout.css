@@ -1,0 +1,113 @@
+.dashboard-shell {
+  min-height: 100vh;
+  background: radial-gradient(120% 120% at 10% 10%, rgba(37, 99, 235, 0.12), transparent),
+    radial-gradient(120% 120% at 90% 0%, rgba(16, 185, 129, 0.12), transparent),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.dashboard-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(248, 250, 252, 0.75);
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: #1f2937;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+}
+
+.nav-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  color: #1f2937;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.nav-shortcut:hover {
+  transform: translateY(-1px);
+  background: rgba(37, 99, 235, 0.14);
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
+}
+
+.dashboard-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.dashboard-header p {
+  margin: 0.35rem 0 0;
+  color: #475569;
+  max-width: 48ch;
+}
+
+.dashboard-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .dashboard-topbar {
+    padding: 1rem 1.25rem;
+  }
+
+  .brand-text {
+    font-size: 1rem;
+  }
+
+  .nav-shortcut {
+    margin-top: 0.75rem;
+  }
+
+  .dashboard-content {
+    padding: 2rem 1.25rem 2.5rem;
+  }
+}

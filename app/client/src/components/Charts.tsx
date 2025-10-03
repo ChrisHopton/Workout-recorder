@@ -98,20 +98,20 @@ export function Charts({ weeklyVolume, oneRMByExercise, oneRMSeriesByExercise }:
 
   return (
     <div className="charts">
-      <div className="chart-card card">
+      <div className="chart-card">
         {weeklyVolume.length ? <Line data={volumeData} options={volumeOptions} /> : <p>No completed sessions yet.</p>}
       </div>
 
       <div className="pr-grid">
         {oneRMByExercise.map((entry) => (
-          <div key={entry.exerciseId} className="pr-card card">
+          <div key={entry.exerciseId} className="pr-card">
             <h4>{entry.exerciseName}</h4>
             <p>{entry.best1RM ? `${entry.best1RM.toFixed(1)} lb` : 'No data'}</p>
           </div>
         ))}
       </div>
 
-      <div className="chart-card card">
+      <div className="chart-card">
         {oneRMSeriesByExercise.length ? <Line data={oneRmData} options={oneRmOptions} /> : <p>Lift history coming soon.</p>}
       </div>
     </div>

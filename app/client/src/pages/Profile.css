@@ -1,50 +1,156 @@
-.profile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+.profile-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
-.plan-controls,
-.stats-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+.overview-card {
+  position: relative;
+  padding: 2rem;
+  border-radius: 24px;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.95) 100%);
+  box-shadow: 0 32px 60px -42px rgba(15, 23, 42, 0.55);
+  overflow: hidden;
 }
 
-.plan-controls h2 {
+.overview-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  pointer-events: none;
+}
+
+.overview-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #2563eb;
+}
+
+.overview-card h2 {
+  margin: 0.75rem 0 0.5rem;
+  font-size: 1.6rem;
+  color: #0f172a;
+}
+
+.overview-card p {
   margin: 0;
+  color: #475569;
+  max-width: 42ch;
 }
 
-.stats-controls label {
+.profile-board {
+  padding: 2.25rem 2rem;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 32px 60px -45px rgba(37, 99, 235, 0.4);
+}
+
+.plan-view,
+.stats-view {
   display: flex;
   flex-direction: column;
-  font-size: 0.85rem;
-  color: #4b5563;
+  gap: 1.5rem;
 }
 
-.stats-controls input {
-  margin-top: 0.25rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 6px;
-  border: 1px solid #cbd5f5;
+.plan-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.plan-toolbar-title {
+  text-align: center;
+}
+
+.plan-toolbar-title span {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.plan-toolbar-title h3 {
+  margin: 0.35rem 0 0;
+  font-size: 1.3rem;
+  color: #1e293b;
+}
+
+.plan-button {
+  min-width: 120px;
+}
+
+.muted {
+  color: #64748b;
+}
+
+.stats-controls-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.stats-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 180px;
+}
+
+.stats-date-field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.6);
+}
+
+.stats-date-field input {
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.stats-date-field input:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.45);
+  outline-offset: 2px;
 }
 
 .error {
   color: #dc2626;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .plan-toolbar {
+    flex-direction: column;
+  }
+
+  .plan-button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 640px) {
-  .profile-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .profile-header .primary-button {
-    width: 100%;
-    text-align: center;
+  .profile-board {
+    padding: 1.75rem 1.5rem;
   }
 }

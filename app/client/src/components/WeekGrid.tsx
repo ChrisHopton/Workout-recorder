@@ -39,7 +39,7 @@ export function WeekGrid({ weekStart, days }: WeekGridProps) {
       {ordered.map((day, idx) => {
         const date = start.add(idx, 'day');
         return (
-          <div key={idx} className="week-grid-cell card">
+          <div key={idx} className="week-grid-cell">
             <h3>{date.format('ddd MMM D')}</h3>
             <p className="week-grid-title">{day?.title ?? 'Rest'}</p>
             <div className="week-grid-body">

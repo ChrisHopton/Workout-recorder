@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import ExerciseCard, { SessionExercise } from '../components/ExerciseCard';
+import DashboardLayout from '../components/DashboardLayout';
 import { api } from '../api/http';
 import './TodayWorkout.css';
 
@@ -119,35 +120,44 @@ function TodayWorkout() {
 
   if (loading) {
     return (
-      <main className="container">
-        <p>Loading today&rsquo;s session…</p>
-      </main>
+      <DashboardLayout
+        title="Loading today&rsquo;s session"
+        subtitle="Gathering your exercises and sets."
+      >
+        <section className="status-card">
+          <p>Loading today&rsquo;s session…</p>
+        </section>
+      </DashboardLayout>
     );
   }
 
   if (error && !session) {
     return (
-      <main className="container">
-        <p className="error">{error}</p>
-      </main>
+      <DashboardLayout title="We hit a snag" subtitle="We couldn&rsquo;t open today&rsquo;s session just yet.">
+        <section className="status-card">
+          <p className="error">{error}</p>
+        </section>
+      </DashboardLayout>
     );
   }
 
   if (!session) {
     return (
-      <main className="container">
-        <p>No session found.</p>
-      </main>
+      <DashboardLayout title="No session found" subtitle="There isn&rsquo;t anything on the board for today.">
+        <section className="status-card">
+          <p>No session found.</p>
+        </section>
+      </DashboardLayout>
     );
   }
 
+  const sessionDate = dayjs(session.sessionDate).format('dddd, MMMM D');
+
   return (
-    <main className="container today">
-      <header className="today-header">
-        <div>
-          <h1>Today&rsquo;s Workout</h1>
-          <p>{dayjs(session.sessionDate).format('dddd, MMMM D')}</p>
-        </div>
+    <DashboardLayout
+      title="Today&rsquo;s Workout"
+      subtitle={sessionDate}
+      actions={
         <div className="today-actions">
           <button type="button" className="secondary-button" onClick={handleSkipDay} disabled={submitting}>
             Skip Today
@@ -156,32 +166,42 @@ function TodayWorkout() {
             Complete Session
           </button>
         </div>
-      </header>
+      }
+    >
+      {error && <p className="error-banner">{error}</p>}
 
-      {error && <p className="error">{error}</p>}
-
-      <section className="exercise-list">
+      <section className="today-board">
         {session.exercises.length === 0 ? (
-          <p>Rest day! Nothing scheduled.</p>
+          <div className="rest-card">
+            <h2>Rest day!</h2>
+            <p>Nothing on deck. Take the win and recover.</p>
+          </div>
         ) : (
-          session.exercises.map((exercise) => (
-            <ExerciseCard
-              key={exercise.id}
-              exercise={exercise}
-              onSetChange={handleSetChange}
-              onSkip={handleSkipExercise}
-            />
-          ))
+          <div className="exercise-list">
+            {session.exercises.map((exercise) => (
+              <ExerciseCard
+                key={exercise.id}
+                exercise={exercise}
+                onSetChange={handleSetChange}
+                onSkip={handleSkipExercise}
+              />
+            ))}
+          </div>
         )}
       </section>
 
-      <section className="session-note card">
-        <label>
-          Session Notes
-          <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="How did it go?" />
-        </label>
+      <section className="session-note-panel">
+        <div className="session-note">
+          <label htmlFor="session-note">Session Notes</label>
+          <textarea
+            id="session-note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="How did it go?"
+          />
+        </div>
       </section>
-    </main>
+    </DashboardLayout>
   );
 }
 

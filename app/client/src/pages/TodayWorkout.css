@@ -1,50 +1,103 @@
-.today-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+.today-actions {
+  display: inline-flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.today-actions {
-  display: flex;
-  gap: 0.75rem;
+.today-board {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.95) 100%);
+  box-shadow: 0 36px 72px -45px rgba(15, 23, 42, 0.5);
 }
 
 .exercise-list {
   display: flex;
   flex-direction: column;
+  gap: 1.25rem;
+}
+
+.rest-card {
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border-radius: 20px;
+  background: rgba(37, 99, 235, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  color: #0f172a;
+}
+
+.rest-card h2 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.rest-card p {
+  margin: 0.5rem 0 0;
+  color: #475569;
+}
+
+.error-banner {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: rgba(220, 38, 38, 0.12);
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.session-note-panel {
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+}
+
+.session-note {
+  padding: 1.75rem;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 30px 60px -44px rgba(59, 130, 246, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .session-note label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.6);
 }
 
 .session-note textarea {
-  min-height: 120px;
-  padding: 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #cbd5f5;
+  min-height: 140px;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(248, 250, 252, 0.9);
   font-family: inherit;
   font-size: 1rem;
+  resize: vertical;
+}
+
+.session-note textarea:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 3px;
 }
 
 @media (max-width: 640px) {
-  .today-header {
-    flex-direction: column;
-    align-items: stretch;
+  .today-board {
+    padding: 1.75rem 1.5rem;
   }
 
   .today-actions {
-    flex-direction: column;
+    width: 100%;
+    justify-content: stretch;
   }
 
   .today-actions .primary-button,
   .today-actions .secondary-button {
-    width: 100%;
+    flex: 1 1 auto;
   }
 }

@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import WeekGrid, { PlanDay } from '../components/WeekGrid';
 import Tabs from '../components/Tabs';
 import Charts, { OneRMEntry, OneRMSeriesEntry, WeeklyVolumePoint } from '../components/Charts';
+import DashboardLayout from '../components/DashboardLayout';
 import { api } from '../api/http';
 import './Profile.css';
 
@@ -91,71 +92,97 @@ function Profile() {
     setWeekStart((prev) => dayjs(prev).add(offset, 'week').format('YYYY-MM-DD'));
   }
 
+  const profileName = profile ? profile.name : `Profile #${profileId}`;
+  const focusText =
+    profile?.gender === 'male'
+      ? 'Progressive overload'
+      : profile?.gender === 'female'
+        ? 'Aesthetic sculpting'
+        : 'Custom programming';
+
   return (
-    <main className="container profile">
-      <header className="profile-header">
-        <div>
-          <h1>Training Overview</h1>
-          <p>{profile ? profile.name : `Profile #${profileId}`}</p>
-        </div>
+    <DashboardLayout
+      title={`${profileName}`}
+      subtitle="Monitor programming, move between weeks, and stay on top of long-term progress."
+      actions={
         <Link className="primary-button" to={`/p/${profileId}/workout/today`}>
           Start Workout
         </Link>
-      </header>
+      }
+    >
+      <section className="profile-overview-grid">
+        <div className="overview-card">
+          <span className="overview-label">Current Week</span>
+          <h2>{weekLabel}</h2>
+          <p>Adjust volume or timing as you glide through the training split.</p>
+        </div>
+        <div className="overview-card">
+          <span className="overview-label">Focus</span>
+          <h2>{focusText}</h2>
+          <p>Fine-tuned recommendations crafted for {profileName}.</p>
+        </div>
+      </section>
 
-      <Tabs
-        tabs={[{ key: 'plan', label: 'Week Plan' }, { key: 'stats', label: 'Stats' }]}
-        activeKey={activeTab}
-        onChange={(key) => setActiveTab(key as 'plan' | 'stats')}
-      />
+      <section className="profile-board">
+        <Tabs
+          tabs={[{ key: 'plan', label: 'Week Plan' }, { key: 'stats', label: 'Stats' }]}
+          activeKey={activeTab}
+          onChange={(key) => setActiveTab(key as 'plan' | 'stats')}
+        />
 
-      {activeTab === 'plan' ? (
-        <section className="plan-section">
-          <div className="plan-controls">
-            <button type="button" onClick={() => shiftWeek(-1)} className="secondary-button">
-              Previous
-            </button>
-            <h2>{weekLabel}</h2>
-            <button type="button" onClick={() => shiftWeek(1)} className="secondary-button">
-              Next
-            </button>
+        {activeTab === 'plan' ? (
+          <div className="plan-view">
+            <div className="plan-toolbar">
+              <button type="button" onClick={() => shiftWeek(-1)} className="secondary-button plan-button">
+                ‹ Previous
+              </button>
+              <div className="plan-toolbar-title">
+                <span>Training Window</span>
+                <h3>{weekLabel}</h3>
+              </div>
+              <button type="button" onClick={() => shiftWeek(1)} className="secondary-button plan-button">
+                Next ›
+              </button>
+            </div>
+            {planLoading && <p className="muted">Loading plan…</p>}
+            {planError && <p className="error">{planError}</p>}
+            {plan && <WeekGrid weekStart={weekStart} days={plan.days} />}
           </div>
-          {planLoading && <p>Loading plan…</p>}
-          {planError && <p className="error">{planError}</p>}
-          {plan && <WeekGrid weekStart={weekStart} days={plan.days} />}
-        </section>
-      ) : (
-        <section className="stats-section">
-          <div className="stats-controls">
-            <label>
-              From
-              <input
-                type="date"
-                value={statsRange.from}
-                onChange={(e) => setStatsRange((prev) => ({ ...prev, from: e.target.value }))}
+        ) : (
+          <div className="stats-view">
+            <div className="stats-controls-card">
+              <div className="stats-date-field">
+                <label htmlFor="stats-from">From</label>
+                <input
+                  id="stats-from"
+                  type="date"
+                  value={statsRange.from}
+                  onChange={(e) => setStatsRange((prev) => ({ ...prev, from: e.target.value }))}
+                />
+              </div>
+              <div className="stats-date-field">
+                <label htmlFor="stats-to">To</label>
+                <input
+                  id="stats-to"
+                  type="date"
+                  value={statsRange.to}
+                  onChange={(e) => setStatsRange((prev) => ({ ...prev, to: e.target.value }))}
+                />
+              </div>
+            </div>
+            {statsLoading && <p className="muted">Loading stats…</p>}
+            {statsError && <p className="error">{statsError}</p>}
+            {stats && (
+              <Charts
+                weeklyVolume={stats.weeklyVolume}
+                oneRMByExercise={stats.oneRMByExercise}
+                oneRMSeriesByExercise={stats.oneRMSeriesByExercise}
               />
-            </label>
-            <label>
-              To
-              <input
-                type="date"
-                value={statsRange.to}
-                onChange={(e) => setStatsRange((prev) => ({ ...prev, to: e.target.value }))}
-              />
-            </label>
+            )}
           </div>
-          {statsLoading && <p>Loading stats…</p>}
-          {statsError && <p className="error">{statsError}</p>}
-          {stats && (
-            <Charts
-              weeklyVolume={stats.weeklyVolume}
-              oneRMByExercise={stats.oneRMByExercise}
-              oneRMSeriesByExercise={stats.oneRMSeriesByExercise}
-            />
-          )}
-        </section>
-      )}
-    </main>
+        )}
+      </section>
+    </DashboardLayout>
   );
 }
 

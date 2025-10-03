@@ -29,7 +29,7 @@ export function ExerciseCard({ exercise, onSetChange, onSkip }: ExerciseCardProp
   const target = `${exercise.targetSets} × ${exercise.repLow}-${exercise.repHigh}`;
 
   return (
-    <div className={`exercise-card card ${disabled ? 'exercise-card--disabled' : ''}`}>
+    <div className={`exercise-card ${disabled ? 'exercise-card--disabled' : ''}`}>
       <div className="exercise-card-header">
         <div>
           <h2>{exercise.exerciseName}</h2>

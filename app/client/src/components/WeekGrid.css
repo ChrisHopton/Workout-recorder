@@ -1,17 +1,33 @@
 .week-grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .week-grid-cell {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  padding: 1.5rem 1.25rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 24px 50px -40px rgba(15, 23, 42, 0.55);
+  min-height: 220px;
+}
+
+.week-grid-cell h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.7);
 }
 
 .week-grid-title {
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #0f172a;
 }
 
 .week-grid-body ul {
@@ -20,22 +36,24 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.65rem;
 }
 
 .exercise-name {
   font-weight: 600;
   display: block;
+  color: #1f2937;
 }
 
 .exercise-meta {
   font-size: 0.9rem;
-  color: #4b5563;
+  color: #475569;
 }
 
 .rest-day {
+  margin-top: 0.5rem;
   font-style: italic;
-  color: #6b7280;
+  color: #64748b;
 }
 
 @media (min-width: 900px) {
