@@ -1,0 +1,45 @@
+.week-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.week-grid-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.week-grid-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.week-grid-body ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.exercise-name {
+  font-weight: 600;
+  display: block;
+}
+
+.exercise-meta {
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.rest-day {
+  font-style: italic;
+  color: #6b7280;
+}
+
+@media (min-width: 900px) {
+  .week-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}

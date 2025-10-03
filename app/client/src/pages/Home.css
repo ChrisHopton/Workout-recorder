@@ -1,0 +1,35 @@
+.home-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.profile-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.profile-card {
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.2);
+}
+
+.profile-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.profile-card p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.error {
+  color: #dc2626;
+}

@@ -1,0 +1,50 @@
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.plan-controls,
+.stats-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.plan-controls h2 {
+  margin: 0;
+}
+
+.stats-controls label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.stats-controls input {
+  margin-top: 0.25rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5f5;
+}
+
+.error {
+  color: #dc2626;
+}
+
+@media (max-width: 640px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .profile-header .primary-button {
+    width: 100%;
+    text-align: center;
+  }
+}
