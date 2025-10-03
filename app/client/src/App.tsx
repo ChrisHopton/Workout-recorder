@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import TodayWorkout from './pages/TodayWorkout';
+import './styles/global.css';
 
 function App() {
   return (
