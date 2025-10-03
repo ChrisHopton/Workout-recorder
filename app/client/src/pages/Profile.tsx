@@ -87,21 +87,70 @@ function Profile() {
     return `${start.format('MMM D')} - ${start.add(6, 'day').format('MMM D, YYYY')}`;
   }, [weekStart]);
 
+  const orderedPlanDays = useMemo(() => {
+    if (!plan) return [] as PlanDay[];
+    return [1, 2, 3, 4, 5, 6, 0]
+      .map((dow) => plan.days.find((d) => d.dayOfWeek === dow))
+      .filter((day): day is PlanDay => Boolean(day));
+  }, [plan]);
+
+  const activeTrainingDays = useMemo(() => {
+    if (!plan) return 0;
+    return plan.days.filter((day) => day.exercises.length > 0).length;
+  }, [plan]);
+
+  const totalPlannedExercises = useMemo(() => {
+    if (!plan) return 0;
+    return plan.days.reduce((count, day) => count + day.exercises.length, 0);
+  }, [plan]);
+
+  const nextFocus = useMemo(() => {
+    const nextDay = orderedPlanDays.find((day) => day.exercises.length > 0);
+    return nextDay ? nextDay.title : 'Recovery Day';
+  }, [orderedPlanDays]);
+
+  const statsWindow = useMemo(() => {
+    const from = dayjs(statsRange.from);
+    const to = dayjs(statsRange.to);
+    return `${from.format('MMM D, YYYY')} – ${to.format('MMM D, YYYY')}`;
+  }, [statsRange.from, statsRange.to]);
+
+  const activeDaysValue = planLoading ? '…' : plan ? activeTrainingDays : '—';
+  const plannedExercisesValue = planLoading ? '…' : plan ? totalPlannedExercises : '—';
+  const nextFocusValue = planLoading ? 'Loading…' : plan ? nextFocus : planError ? 'Load failed' : 'Recovery Day';
+
   function shiftWeek(offset: number) {
     setWeekStart((prev) => dayjs(prev).add(offset, 'week').format('YYYY-MM-DD'));
   }
 
   return (
     <main className="container profile">
-      <header className="profile-header">
-        <div>
-          <h1>Training Overview</h1>
-          <p>{profile ? profile.name : `Profile #${profileId}`}</p>
+      <section className="profile-hero card">
+        <div className="profile-hero-main">
+          <div>
+            <p className="eyebrow">Training dashboard</p>
+            <h1>{profile ? profile.name : `Profile #${profileId}`}</h1>
+            <p className="profile-hero-subtitle">Current training week · {weekLabel}</p>
+          </div>
+          <Link className="primary-button" to={`/p/${profileId}/workout/today`}>
+            Start Workout
+          </Link>
         </div>
-        <Link className="primary-button" to={`/p/${profileId}/workout/today`}>
-          Start Workout
-        </Link>
-      </header>
+        <div className="profile-hero-metrics">
+          <div className="profile-metric">
+            <span className="profile-metric-label">Active days</span>
+            <span className="profile-metric-value">{activeDaysValue}</span>
+          </div>
+          <div className="profile-metric">
+            <span className="profile-metric-label">Planned exercises</span>
+            <span className="profile-metric-value">{plannedExercisesValue}</span>
+          </div>
+          <div className="profile-metric">
+            <span className="profile-metric-label">Next focus</span>
+            <span className="profile-metric-value profile-metric-value--text">{nextFocusValue}</span>
+          </div>
+        </div>
+      </section>
 
       <Tabs
         tabs={[{ key: 'plan', label: 'Week Plan' }, { key: 'stats', label: 'Stats' }]}
@@ -110,49 +159,65 @@ function Profile() {
       />
 
       {activeTab === 'plan' ? (
-        <section className="plan-section">
-          <div className="plan-controls">
-            <button type="button" onClick={() => shiftWeek(-1)} className="secondary-button">
-              Previous
-            </button>
-            <h2>{weekLabel}</h2>
-            <button type="button" onClick={() => shiftWeek(1)} className="secondary-button">
-              Next
-            </button>
+        <section className="profile-panel card plan-section">
+          <div className="panel-header">
+            <div>
+              <h2>Weekly split</h2>
+              <p className="panel-description">Preview the work for this training block.</p>
+            </div>
+            <div className="plan-nav" aria-label="Change week">
+              <button type="button" onClick={() => shiftWeek(-1)} className="secondary-button plan-nav-button">
+                ← Previous
+              </button>
+              <span className="plan-nav-label">{weekLabel}</span>
+              <button type="button" onClick={() => shiftWeek(1)} className="secondary-button plan-nav-button">
+                Next →
+              </button>
+            </div>
           </div>
-          {planLoading && <p>Loading plan…</p>}
-          {planError && <p className="error">{planError}</p>}
-          {plan && <WeekGrid weekStart={weekStart} days={plan.days} />}
+          <div className="panel-body">
+            {planLoading && <p>Loading plan…</p>}
+            {planError && <p className="error">{planError}</p>}
+            {plan && <WeekGrid weekStart={weekStart} days={plan.days} />}
+          </div>
         </section>
       ) : (
-        <section className="stats-section">
-          <div className="stats-controls">
-            <label>
-              From
-              <input
-                type="date"
-                value={statsRange.from}
-                onChange={(e) => setStatsRange((prev) => ({ ...prev, from: e.target.value }))}
-              />
-            </label>
-            <label>
-              To
-              <input
-                type="date"
-                value={statsRange.to}
-                onChange={(e) => setStatsRange((prev) => ({ ...prev, to: e.target.value }))}
-              />
-            </label>
+        <section className="profile-panel card stats-section">
+          <div className="panel-header">
+            <div>
+              <h2>Progress trends</h2>
+              <p className="panel-description">Visualise volume and strength between {statsWindow}.</p>
+            </div>
+            <div className="stats-controls">
+              <label>
+                From
+                <input
+                  type="date"
+                  value={statsRange.from}
+                  onChange={(e) => setStatsRange((prev) => ({ ...prev, from: e.target.value }))}
+                />
+              </label>
+              <label>
+                To
+                <input
+                  type="date"
+                  value={statsRange.to}
+                  onChange={(e) => setStatsRange((prev) => ({ ...prev, to: e.target.value }))}
+                />
+              </label>
+            </div>
           </div>
-          {statsLoading && <p>Loading stats…</p>}
-          {statsError && <p className="error">{statsError}</p>}
-          {stats && (
-            <Charts
-              weeklyVolume={stats.weeklyVolume}
-              oneRMByExercise={stats.oneRMByExercise}
-              oneRMSeriesByExercise={stats.oneRMSeriesByExercise}
-            />
-          )}
+          <div className="panel-body">
+            {statsLoading && <p>Loading stats…</p>}
+            {statsError && <p className="error">{statsError}</p>}
+            {stats && (
+              <Charts
+                weeklyVolume={stats.weeklyVolume}
+                oneRMByExercise={stats.oneRMByExercise}
+                oneRMSeriesByExercise={stats.oneRMSeriesByExercise}
+              />
+            )}
+          </div>
         </section>
       )}
     </main>

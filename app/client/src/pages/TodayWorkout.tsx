@@ -143,10 +143,11 @@ function TodayWorkout() {
 
   return (
     <main className="container today">
-      <header className="today-header">
-        <div>
+      <section className="today-hero card">
+        <div className="today-hero-text">
+          <p className="eyebrow">Today&rsquo;s focus</p>
           <h1>Today&rsquo;s Workout</h1>
-          <p>{dayjs(session.sessionDate).format('dddd, MMMM D')}</p>
+          <p className="today-hero-subtitle">{dayjs(session.sessionDate).format('dddd, MMMM D')}</p>
         </div>
         <div className="today-actions">
           <button type="button" className="secondary-button" onClick={handleSkipDay} disabled={submitting}>
@@ -156,23 +157,26 @@ function TodayWorkout() {
             Complete Session
           </button>
         </div>
-      </header>
+      </section>
 
-      {error && <p className="error">{error}</p>}
+      {error && <div className="today-error card">{error}</div>}
 
-      <section className="exercise-list">
-        {session.exercises.length === 0 ? (
-          <p>Rest day! Nothing scheduled.</p>
-        ) : (
-          session.exercises.map((exercise) => (
-            <ExerciseCard
-              key={exercise.id}
-              exercise={exercise}
-              onSetChange={handleSetChange}
-              onSkip={handleSkipExercise}
-            />
-          ))
-        )}
+      <section className="exercise-section">
+        <h2>Workout block</h2>
+        <div className="exercise-list">
+          {session.exercises.length === 0 ? (
+            <div className="exercise-empty card">Rest day! Nothing scheduled.</div>
+          ) : (
+            session.exercises.map((exercise) => (
+              <ExerciseCard
+                key={exercise.id}
+                exercise={exercise}
+                onSetChange={handleSetChange}
+                onSkip={handleSkipExercise}
+              />
+            ))
+          )}
+        </div>
       </section>
 
       <section className="session-note card">

@@ -1,36 +1,152 @@
-.profile-header {
+.profile {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
-.plan-controls,
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  padding: 2.25rem clamp(1.5rem, 4vw, 2.75rem);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.16), rgba(14, 165, 233, 0.08));
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 110% -10%, rgba(255, 255, 255, 0.35), transparent 55%);
+  pointer-events: none;
+}
+
+.profile-hero-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.profile-hero-subtitle {
+  margin: 0.5rem 0 0;
+  color: rgba(51, 65, 85, 0.9);
+}
+
+.profile-hero-metrics {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.profile-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.profile-metric-label {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(30, 64, 175, 0.7);
+}
+
+.profile-metric-value {
+  font-size: 1.65rem;
+  color: #1d4ed8;
+  letter-spacing: 0.01em;
+}
+
+.profile-metric-value--text {
+  font-size: 1.05rem;
+  color: rgba(30, 41, 59, 0.9);
+}
+
+.profile-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem clamp(1.5rem, 3vw, 2.5rem);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 24px 48px -28px rgba(15, 23, 42, 0.4);
+}
+
+.panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.panel-header h2 {
+  margin: 0;
+}
+
+.panel-description {
+  margin: 0.35rem 0 0;
+  color: rgba(71, 85, 105, 0.85);
+}
+
+.panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.plan-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  color: #1d4ed8;
+}
+
+.plan-nav-label {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.plan-nav-button {
+  white-space: nowrap;
+}
+
 .stats-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-}
-
-.plan-controls h2 {
-  margin: 0;
 }
 
 .stats-controls label {
   display: flex;
   flex-direction: column;
   font-size: 0.85rem;
-  color: #4b5563;
+  color: rgba(71, 85, 105, 0.9);
 }
 
 .stats-controls input {
   margin-top: 0.25rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 6px;
-  border: 1px solid #cbd5f5;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .error {
@@ -38,13 +154,69 @@
 }
 
 @media (max-width: 640px) {
-  .profile-header {
+  .profile-hero-main {
     flex-direction: column;
-    align-items: stretch;
   }
 
-  .profile-header .primary-button {
+  .profile-hero-main .primary-button {
     width: 100%;
     text-align: center;
+  }
+
+  .plan-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .plan-nav-button {
+    flex: 1;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .profile-hero {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.18), rgba(34, 197, 94, 0.1));
+    border-color: rgba(96, 165, 250, 0.25);
+  }
+
+  .profile-hero-subtitle {
+    color: rgba(203, 213, 225, 0.85);
+  }
+
+  .profile-metric {
+    background: rgba(15, 23, 42, 0.72);
+    border-color: rgba(148, 163, 184, 0.25);
+    box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.12);
+  }
+
+  .profile-metric-label {
+    color: rgba(191, 219, 254, 0.75);
+  }
+
+  .profile-metric-value {
+    color: #bfdbfe;
+  }
+
+  .profile-metric-value--text {
+    color: rgba(226, 232, 240, 0.92);
+  }
+
+  .profile-panel {
+    background: rgba(15, 23, 42, 0.78);
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 24px 48px -26px rgba(14, 116, 144, 0.55);
+  }
+
+  .panel-description,
+  .stats-controls label,
+  .stats-controls input,
+  .plan-nav-label {
+    color: rgba(203, 213, 225, 0.85);
+  }
+
+  .stats-controls input {
+    background: rgba(17, 24, 39, 0.75);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: rgba(226, 232, 240, 0.95);
   }
 }
