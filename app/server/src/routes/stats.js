@@ -20,6 +20,19 @@ function formatDate(value) {
   return new Date(value).toISOString().slice(0, 10);
 }
 
+function normalizeDecimal(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) {
+    return null;
+  }
+
+  return Number(numeric.toFixed(2));
+}
+
 router.get('/summary', async (req, res, next) => {
   try {
     const profileId = parseInt(req.query.profileId, 10);
@@ -79,7 +92,7 @@ router.get('/summary', async (req, res, next) => {
     const oneRMByExercise = oneRmRows.map((row) => ({
       exerciseId: row.exerciseId,
       exerciseName: row.exerciseName,
-      best1RM: row.best1RM ? Number(row.best1RM.toFixed(2)) : null
+      best1RM: normalizeDecimal(row.best1RM)
     }));
 
     const [topExercises] = await pool.query(
@@ -125,7 +138,7 @@ router.get('/summary', async (req, res, next) => {
         exerciseName: exercise.exerciseName,
         points: seriesRows.map((row) => ({
           date: formatDate(row.sessionDate),
-          est1RM: row.est1RM ? Number(row.est1RM.toFixed(2)) : null
+          est1RM: normalizeDecimal(row.est1RM)
         }))
       });
     }
